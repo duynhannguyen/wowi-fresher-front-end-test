@@ -1,44 +1,104 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { RegisterSchema } from "@/types/register-schema";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterForm() {
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      name: "",
+    },
+  });
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    console.log("values", values);
+  };
   return (
     <div className="border border-slate-600 rounded-md p-5  ">
       <h3 className="text-2xl font-semibold mb-3  "> Create an account 🎉 </h3>
-      <form className="flex flex-col items-center justify-center w-full  m-auto   gap-4 ">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col justify-center w-full  m-auto   gap-4 "
+      >
         <div className="flex flex-col gap-2 w-full ">
-          <label htmlFor="username">User name</label>
+          <label
+            className={`${
+              form.formState.errors.name?.message
+                ? "text-red-400"
+                : "text-white"
+            }`}
+            htmlFor="username"
+          >
+            User name
+          </label>
           <input
             className="p-2 rounded-md bg-transparent border-2 outline-none border-slate-500  focus:border-2 focus:border-purple-800  transition-all duration-300 ease-in-out "
-            name="username"
             id="username"
             type="text"
             autoComplete="username"
             placeholder="John Doe"
+            {...form.register("name")}
           />
         </div>
-
+        <p className="text-xs text-red-400 ">
+          {form.formState.errors.name?.message}{" "}
+        </p>
         <div className="flex flex-col gap-2 w-full ">
-          <label htmlFor="email">Email</label>
+          <label
+            className={`${
+              form.formState.errors.email?.message
+                ? "text-red-400"
+                : "text-white"
+            }`}
+            htmlFor="email"
+          >
+            Email
+          </label>
           <input
             className="p-2 rounded-md bg-transparent border-2 outline-none border-slate-500  focus:border-2 focus:border-purple-800  transition-all duration-300 ease-in-out "
-            name="email"
             id="email"
             type="text"
             autoComplete="email"
             placeholder="test@gmail.com"
+            {...form.register("email")}
           />
         </div>
+        <p className="text-xs text-red-400 ">
+          {form.formState.errors.email?.message}{" "}
+        </p>
         <div className="flex flex-col gap-2 w-full ">
-          <label htmlFor="password">Password</label>
+          <label
+            className={`${
+              form.formState.errors.password?.message
+                ? "text-red-400"
+                : "text-white"
+            }`}
+            htmlFor="password"
+          >
+            Password
+          </label>
           <input
             className="p-2 rounded-md bg-transparent border-2 outline-none border-slate-500  focus:border-2 focus:border-purple-800  transition-all duration-300 ease-in-out "
-            name="password"
             id="password"
             type="password"
-            placeholder="test@gmail.com"
+            placeholder="********"
+            autoComplete="current-password"
+            {...form.register("password")}
           />
         </div>
-        <button className="bg-purple-800 py-3 px-4 w-full rounded-md hover:opacity-75 transition-all duration-300 ease-in-out   ">
+        <p className="text-xs text-red-400 ">
+          {form.formState.errors.password?.message}{" "}
+        </p>
+        <button
+          type="submit"
+          className="bg-purple-800 py-3 px-4 w-full rounded-md hover:opacity-75 transition-all duration-300 ease-in-out  disabled:opacity-35   "
+          disabled={!form.formState.isDirty || !form.formState.isValid}
+        >
           Register
         </button>
       </form>

@@ -5,8 +5,6 @@ import { LoginSchema } from "@/types/login-schema";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import FormSuccess from "./form-success";
-import FormError from "./form-error";
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({
