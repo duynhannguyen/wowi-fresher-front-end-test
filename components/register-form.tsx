@@ -5,6 +5,8 @@ import * as z from "zod";
 import { RegisterSchema } from "@/types/register-schema";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "next-safe-action/hooks";
+import { emailRegister } from "@/server/actions/email-register";
 
 export default function RegisterForm() {
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -15,7 +17,15 @@ export default function RegisterForm() {
       name: "",
     },
   });
+
+  const { status, execute } = useAction(emailRegister, {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    execute(values);
     console.log("values", values);
   };
   return (

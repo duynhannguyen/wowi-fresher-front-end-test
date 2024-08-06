@@ -5,6 +5,8 @@ import { LoginSchema } from "@/types/login-schema";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "next-safe-action/hooks";
+import { emailSignin } from "@/server/actions/email-signin";
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -15,15 +17,14 @@ export default function LoginForm() {
     },
   });
 
+  const { status, execute } = useAction(emailSignin, {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    const data = await fetch("http://localhost:3000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((res) => res.json());
-    console.log("data", data);
+    execute(values);
     console.log("values", values);
   };
 
