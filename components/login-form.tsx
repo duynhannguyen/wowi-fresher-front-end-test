@@ -15,7 +15,15 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    const data = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((res) => res.json());
+    console.log("data", data);
     console.log("values", values);
   };
 
