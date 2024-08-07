@@ -7,8 +7,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { emailSignin } from "@/server/actions/email-signin";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import FormError from "./form-error";
+import FormSuccess from "./form-success";
 
 export default function LoginForm() {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -19,13 +26,18 @@ export default function LoginForm() {
 
   const { status, execute } = useAction(emailSignin, {
     onSuccess: (data) => {
-      console.log(data);
+      if (data.data?.success) {
+        setSuccess(data.data?.success);
+        router.push("/");
+      }
+      if (data.data?.error) setSuccess(data.data?.error);
     },
   });
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
     execute(values);
-    console.log("values", values);
   };
 
   return (
@@ -83,11 +95,16 @@ export default function LoginForm() {
           {" "}
           {form.formState.errors.password?.message}{" "}
         </p>
-
+        <FormError message={error} />
+        <FormSuccess message={success} />
         <button
           type="submit"
           className="bg-purple-800 py-3 px-4 w-full rounded-md hover:opacity-75 transition-all duration-300 ease-in-out disabled:opacity-35   "
-          disabled={!form.formState.isDirty || !form.formState.isValid}
+          disabled={
+            !form.formState.isDirty ||
+            !form.formState.isValid ||
+            status === "executing"
+          }
         >
           Sign In
         </button>
