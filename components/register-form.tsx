@@ -84,7 +84,7 @@ export default function RegisterForm() {
           <input
             className="p-2 rounded-md bg-transparent border-2 outline-none border-slate-500  focus:border-2 focus:border-purple-800  transition-all duration-300 ease-in-out "
             id="email"
-            type="text"
+            type="email"
             autoComplete="email"
             placeholder="test@gmail.com"
             {...form.register("email")}

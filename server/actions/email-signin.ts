@@ -6,6 +6,7 @@ import { db } from "..";
 import { eq } from "drizzle-orm";
 import { wowiUser } from "../schema";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const action = createSafeActionClient();
 
 export const emailSignin = action
@@ -29,9 +30,20 @@ export const emailSignin = action
           return { error: "Email or password is incorrect" };
         }
       }
+      const payload = {
+        email,
+        name: existingUser.name,
+        id: existingUser.id,
+      };
 
+      const token = jwt.sign(payload, process.env.SECRET_KEY!, {
+        expiresIn: "1h",
+      });
       return {
-        success: "Login success",
+        success: {
+          message: "Login successfully",
+          token,
+        },
       };
     } catch (error) {
       throw error;

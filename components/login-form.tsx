@@ -27,8 +27,10 @@ export default function LoginForm() {
   const { status, execute } = useAction(emailSignin, {
     onSuccess: (data) => {
       if (data.data?.success) {
-        setSuccess(data.data?.success);
-        router.push("/");
+        setSuccess(data.data?.success.message);
+        const stringifyAccesstoken = JSON.stringify(data.data.success.token);
+        localStorage.setItem("accessToken", stringifyAccesstoken);
+        router.push("/dashboard");
       }
       if (data.data?.error) setSuccess(data.data?.error);
     },
@@ -61,7 +63,7 @@ export default function LoginForm() {
           <input
             className="p-2 rounded-md bg-transparent border-2 outline-none border-slate-500  focus:border-2 focus:border-purple-800  transition-all duration-300 ease-in-out "
             id="email"
-            type="text"
+            type="email"
             autoComplete="email"
             placeholder="test@gmail.com"
             {...form.register("email")}
