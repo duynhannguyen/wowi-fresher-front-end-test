@@ -7,8 +7,15 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { emailRegister } from "@/server/actions/email-register";
+import { useState } from "react";
+import FormError from "./form-error";
+import FormSuccess from "./form-success";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -20,13 +27,18 @@ export default function RegisterForm() {
 
   const { status, execute } = useAction(emailRegister, {
     onSuccess: (data) => {
-      console.log(data);
+      if (data.data?.success) {
+        setSuccess(data.data.success);
+        router.push("/auth/login");
+      }
+      if (data.data?.error) setError(data.data.error);
     },
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    setError("");
+    setSuccess("");
     execute(values);
-    console.log("values", values);
   };
   return (
     <div className="border border-slate-600 rounded-md p-5  ">
@@ -104,10 +116,16 @@ export default function RegisterForm() {
         <p className="text-xs text-red-400 ">
           {form.formState.errors.password?.message}{" "}
         </p>
+        <FormError message={error} />
+        <FormSuccess message={success} />
         <button
           type="submit"
           className="bg-purple-800 py-3 px-4 w-full rounded-md hover:opacity-75 transition-all duration-300 ease-in-out  disabled:opacity-35   "
-          disabled={!form.formState.isDirty || !form.formState.isValid}
+          disabled={
+            !form.formState.isDirty ||
+            !form.formState.isValid ||
+            status === "executing"
+          }
         >
           Register
         </button>
