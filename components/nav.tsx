@@ -8,7 +8,13 @@ import { useEffect } from "react";
 
 export default function Nav() {
   const router = useRouter();
-  const { accessToken, user, signOut } = useTokenStore();
+  const accessToken = localStorage.getItem("accessToken");
+  useEffect(() => {
+    if (!accessToken) {
+      return router.push("/");
+    }
+  }, []);
+  const { user, signOut } = useTokenStore();
 
   return (
     <header className="  py-8   ">
