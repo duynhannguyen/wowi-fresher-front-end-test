@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { wowiUser } from "../schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { userInfo } from "os";
 const action = createSafeActionClient();
 
 export const emailSignin = action
@@ -30,6 +31,7 @@ export const emailSignin = action
           return { error: "Email or password is incorrect" };
         }
       }
+
       const payload = {
         email,
         name: existingUser.name,
@@ -43,6 +45,7 @@ export const emailSignin = action
         success: {
           message: "Login successfully",
           token,
+          userInfo: payload,
         },
       };
     } catch (error) {

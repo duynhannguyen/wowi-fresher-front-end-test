@@ -1,13 +1,15 @@
 "use client";
 
+import { useTokenStore } from "@/libs/client-store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Dashboard() {
+  const { accessToken } = useTokenStore();
+
   const router = useRouter();
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
+    if (!accessToken) {
       return router.push("/");
     }
   }, []);

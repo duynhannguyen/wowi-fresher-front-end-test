@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FormError from "./form-error";
 import FormSuccess from "./form-success";
+import { useTokenStore } from "@/libs/client-store";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
@@ -23,13 +24,15 @@ export default function LoginForm() {
       password: "",
     },
   });
-
+  const { storeAccessToken, storeUserInfo } = useTokenStore();
   const { status, execute } = useAction(emailSignin, {
     onSuccess: (data) => {
       if (data.data?.success) {
         setSuccess(data.data?.success.message);
         const stringifyAccesstoken = JSON.stringify(data.data.success.token);
         localStorage.setItem("accessToken", stringifyAccesstoken);
+        storeAccessToken(data.data.success.token);
+        storeUserInfo(data.data.success.userInfo);
         router.push("/dashboard");
       }
       if (data.data?.error) setSuccess(data.data?.error);
