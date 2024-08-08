@@ -1,5 +1,12 @@
-import Dashboard from "@/components/dasboard";
+import { Dashboard } from "@/components/dasboard";
+import { db } from "@/server";
+import { columns } from "@/components/columns";
+export default async function DashBoardPage() {
+  const userData = await db.query.wowiUser.findMany({
+    columns: {
+      password: false,
+    },
+  });
 
-export default function DashBoardPage() {
-  return <Dashboard />;
+  return <Dashboard data={userData} columns={columns} />;
 }
