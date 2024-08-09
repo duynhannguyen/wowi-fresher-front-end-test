@@ -4,16 +4,11 @@ import { useTokenStore } from "@/libs/client-store";
 import { LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function Nav() {
   const router = useRouter();
-  const accessToken = localStorage.getItem("accessToken");
-  useEffect(() => {
-    if (!accessToken) {
-      return router.push("/");
-    }
-  }, []);
+  const { accessToken } = useTokenStore();
+
   const { user, signOut } = useTokenStore();
 
   return (

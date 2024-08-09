@@ -19,18 +19,19 @@ export function Dashboard<TData, TValue>({
   data,
   columns,
 }: DataTableProps<TData, TValue>) {
-  const accessToken = localStorage.getItem("accessToken");
+  const { accessToken } = useTokenStore();
+  console.log("accessToken", accessToken);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
   const router = useRouter();
-  useEffect(() => {
-    if (!accessToken) {
-      return router.push("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     return router.push("/");
+  //   }
+  // }, []);
 
   return (
     <div className="w-full ">

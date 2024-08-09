@@ -26,14 +26,36 @@ export default function LoginForm() {
   });
   const { storeAccessToken, storeUserInfo } = useTokenStore();
   const { status, execute } = useAction(emailSignin, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.data?.success) {
         setSuccess(data.data?.success.message);
-        const stringifyAccesstoken = JSON.stringify(data.data.success.token);
-        localStorage.setItem("accessToken", stringifyAccesstoken);
-        storeAccessToken(data.data.success.token);
-        storeUserInfo(data.data.success.userInfo);
+        const result = {
+          message: data.data.success.message,
+          token: data.data.success.token,
+        };
+
+        const resultFromSetToken = await fetch("/api/login", {
+          method: "POST",
+          body: JSON.stringify(result),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then(async (res) => {
+          const payload = await res.json();
+          if (!payload) {
+            throw payload;
+          }
+
+          return payload;
+        });
+        const token = resultFromSetToken.res.token;
+        storeAccessToken(token);
+        router.refresh();
         router.push("/dashboard");
+        // console.log("response", response);
+        // const stringifyAccesstoken = JSON.stringify(data.data.success.token);
+        // localStorage.setItem("accessToken", stringifyAccesstoken);
+        // storeUserInfo(data.data.success.userInfo);
       }
       if (data.data?.error) setSuccess(data.data?.error);
     },

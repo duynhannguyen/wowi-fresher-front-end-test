@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/nav";
-import TokenProvider from "./_tokenProvider";
+import { cookies } from "next/headers";
+import TokenProvider from "./tokenProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,10 +17,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("sessionToken");
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TokenProvider>
+        <TokenProvider token={token?.value}>
           <div className="px-6 md:px-12 max-w-7xl mx-auto">
             <Nav />
             {children}
