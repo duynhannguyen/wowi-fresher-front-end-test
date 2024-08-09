@@ -7,10 +7,28 @@ import { useRouter } from "next/navigation";
 
 export default function Nav() {
   const router = useRouter();
-  const { accessToken } = useTokenStore();
-
-  const { user, signOut } = useTokenStore();
-
+  const { accessToken, user, storeAccessToken } = useTokenStore();
+  const onSignOut = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(async (res) => {
+        const data = await res.json();
+        console.log("data", data);
+        if (!data) {
+          throw data;
+        }
+        return data;
+      });
+      storeAccessToken("");
+      router.push("/auth/login");
+    } catch (error) {
+      throw error;
+    }
+  };
   return (
     <header className="  py-8   ">
       <nav className="flex items-center justify-between">
@@ -21,11 +39,7 @@ export default function Nav() {
           {accessToken ? <span>Hello {user.name} </span> : null}
           {accessToken ? (
             <button
-              onClick={() => {
-                localStorage.removeItem("accessToken");
-                signOut();
-                router.push("/");
-              }}
+              onClick={() => onSignOut()}
               className="bg-purple-800 p-3 rounded-md cursor-pointer hover:opacity-75 transition-all duration-300 ease-in-out "
             >
               <div className="flex items-center gap-2">
