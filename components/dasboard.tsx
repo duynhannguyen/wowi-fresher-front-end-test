@@ -1,14 +1,11 @@
 "use client";
 
-import { useTokenStore } from "@/libs/client-store";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -19,20 +16,11 @@ export function Dashboard<TData, TValue>({
   data,
   columns,
 }: DataTableProps<TData, TValue>) {
-  const { accessToken } = useTokenStore();
-  console.log("accessToken", accessToken);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const router = useRouter();
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     return router.push("/");
-  //   }
-  // }, []);
-
   return (
     <div className="w-full ">
       <table className="w-full">

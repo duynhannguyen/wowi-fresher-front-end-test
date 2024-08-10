@@ -20,7 +20,7 @@ export default function RootLayout({
   const cookieStore = cookies();
   const token = cookieStore.get("sessionToken");
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <TokenProvider token={token?.value}>
           <div className="px-6 md:px-12 max-w-7xl mx-auto">

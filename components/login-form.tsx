@@ -28,7 +28,6 @@ export default function LoginForm() {
   const { status, execute } = useAction(emailSignin, {
     onSuccess: async (data) => {
       if (data.data?.success) {
-        setSuccess(data.data?.success.message);
         const result = {
           message: data.data.success.message,
           token: data.data.success.token,
@@ -50,14 +49,11 @@ export default function LoginForm() {
         });
         const token = resultFromSetToken.res.token;
         storeAccessToken(token);
+        setSuccess(data.data?.success.message);
         router.refresh();
         router.push("/dashboard");
-        // console.log("response", response);
-        // const stringifyAccesstoken = JSON.stringify(data.data.success.token);
-        // localStorage.setItem("accessToken", stringifyAccesstoken);
-        // storeUserInfo(data.data.success.userInfo);
       }
-      if (data.data?.error) setSuccess(data.data?.error);
+      if (data.data?.error) setError(data.data?.error);
     },
   });
 

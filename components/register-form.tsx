@@ -29,6 +29,7 @@ export default function RegisterForm() {
     onSuccess: (data) => {
       if (data.data?.success) {
         setSuccess(data.data.success);
+        router.refresh();
         router.push("/auth/login");
       }
       if (data.data?.error) setError(data.data.error);

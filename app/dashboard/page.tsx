@@ -7,6 +7,15 @@ export default async function DashBoardPage() {
       password: false,
     },
   });
+  if (userData.length === 0) {
+    return (
+      <div className="text-lg font-bold text-center  "> No result found </div>
+    );
+  }
 
-  return <Dashboard data={userData} columns={columns} />;
+  return (
+    <>
+      <Dashboard data={userData} columns={columns} />
+    </>
+  );
 }

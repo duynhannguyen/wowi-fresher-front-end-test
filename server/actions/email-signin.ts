@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { wowiUser } from "../schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { revalidatePath } from "next/cache";
 
 const action = createSafeActionClient();
 
@@ -41,6 +42,7 @@ export const emailSignin = action
       const token = jwt.sign(payload, process.env.SECRET_KEY!, {
         expiresIn: "1h",
       });
+      revalidatePath("/dashboard");
       return {
         success: {
           message: "Login successfully",
