@@ -36,7 +36,6 @@ export default function Nav() {
           <Link href={"/"}> WOWI-FRESHER_TEST</Link>
         </p>
         <div className="flex items-center gap-4 transition-all duration-300 ease-in-out   ">
-          {accessToken ? <span>Hello {user.name} </span> : null}
           {accessToken ? (
             <button
               onClick={() => onSignOut()}
